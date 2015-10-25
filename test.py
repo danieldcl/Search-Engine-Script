@@ -10,6 +10,6 @@ soup= BeautifulSoup(webpage.read())
 links= soup.find_all('p')
 #description= soup.find_all('p', 'web-result-description')
 
-for i in range(10):
+for i in range(6):
 	print links[i] ,'\n'
 	#print description[i].string , '\n'
