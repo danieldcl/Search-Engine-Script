@@ -92,14 +92,14 @@ for i in range(3):
 	print "\n"
 	print "Search Round ", i+1, '\n'
 	query=raw_input("Enter a search query: ")
-	print '\n'+"Start Randomized Search (1)"
-	print "------------------------------------"
+	print '\n'+"Randomized Search"
+	print "======================================================="
 	googleSearch(query)
-	print "Start Randomized Search (2)"
-	print "------------------------------------"
+	print "Randomized Search"
+	print "======================================================="
 	bingSearch(query)
 	print '\n\n'
-	choiceCheck(raw_input("Please select the better result  1 or 2: "))
+	choiceCheck(raw_input("Please select the better result:"+ "\n" + "(for the results at the top enter 1) (for the results at the bottom enter 2)"))
 
 print "Result: ", googleCount, " vs " , bingCount
 if googleCount > bingCount:
