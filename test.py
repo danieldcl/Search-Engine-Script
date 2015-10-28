@@ -22,10 +22,11 @@ def stripper(text):
                       ).replace('</kw>',''
                       ).replace('<p>',''
                       ).replace('</p>',''
+                      ).replace('?', ''
                       )
 
 def googleSearch(query):
-	encoded = urllib.quote(query)
+	encoded = urllib.quote(stripper(query))
 	rawData = urllib.urlopen('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + encoded).read()
 	jsonData = json.loads(rawData)
 
@@ -39,7 +40,7 @@ def googleSearch(query):
 		print '\n'
 
 def bingSearch(query):
-	encoded = urllib.quote(query)
+	encoded = urllib.quote(stripper(query))
 	url = 'http://www.bing.com/search?format=rss&q='+encoded
 	rawData = urllib.urlopen(url).read()
 	res_links = []
@@ -92,18 +93,21 @@ for i in range(3):
 	print "\n"
 	print "Search Round ", i+1, '\n'
 	query=raw_input("Enter a search query: ")
-	print '\n'+"Randomized Search"
+	print '\n'+"Blind Search"
 	print "======================================================="
 	googleSearch(query)
-	print "Randomized Search"
+	print "Blind Search"
 	print "======================================================="
 	bingSearch(query)
 	print '\n\n'
 	choiceCheck(raw_input("Please select the better result:"+ "\n" + "(for the results at the top enter 1) (for the results at the bottom enter 2)"))
 
+print "\n\n"
+print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 print "Result: ", googleCount, " vs " , bingCount
 if googleCount > bingCount:
 	print "Google wins!"
 else:
 	print "Bing wins!"
+print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"	
 
