@@ -30,10 +30,10 @@ def googleSearch(query):
 	jsonData = json.loads(rawData)
 
 	searchResults = jsonData['responseData']['results']
-	for result in searchResults:
-		title= stripper(result['title'])
-		link = result['url']
-		content = stripper(unicode(result['content']))
+	for i in range(3):
+		title= stripper(searchResults['title'])
+		link = searchResults['url']
+		content = stripper(unicode(searchResults['content']))
 		print "URL: "+link
 		print "Short Description: "+content
 		print '\n'
