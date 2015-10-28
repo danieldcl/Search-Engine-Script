@@ -31,10 +31,10 @@ def googleSearch(query):
 	jsonData = json.loads(rawData)
 
 	searchResults = jsonData['responseData']['results']
-	for result in searchResults:
-		title= stripper(result['title'])
-		link = result['url']
-		content = stripper(unicode(result['content']))
+	for i in range(3):
+		title= stripper(searchResults[i]['title'])
+		link = searchResults[i]['url']
+		content = stripper(unicode(searchResults[i]['content']))
 		print "URL: "+link
 		print "Short Description: "+content
 		print '\n'
@@ -56,8 +56,8 @@ def bingSearch(query):
 		if b.parent.name == 'item':
 			res_desc.append(b.string)
 
-	for i in range(4):
-		print "URL: "+res_links[i]
+	for i in range(3):
+		print "URL: "+ str(res_links[i])
 		print "Short Description: "+res_desc[i]
 		print '\n'
 
