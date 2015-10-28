@@ -1,84 +1,109 @@
 from bs4 import BeautifulSoup, SoupStrainer
 import urllib
 import httplib2
+import requests
+import re
 import json
 
 
 def stripper(text):
     return text.lower().replace('\n',''
                       ).replace('\f',''
-                      ).replace('\v',''                      
+                      ).replace('\v',''
                       ).replace('\t',''
                       ).replace('\r',''
-                      ).replace(' ',''
-                      ).replace('</br>',''
-                      ).replace('<br/>',''
+                      ).replace('&#39;', '\''
+                      ).replace('</br>',' '
+                      ).replace('<br/>',' '
+                      ).replace('<b>',''
+                      ).replace('</b>',''
                       ).replace('<br>',''
-                      ).replace(',',''
-                      ).replace('.',''
+                      ).replace('<kw>',''
+                      ).replace('</kw>',''
                       ).replace('<p>',''
                       ).replace('</p>',''
                       )
 
 def googleSearch(query):
-	encoded = urllib.quote(query) 
+	encoded = urllib.quote(query)
 	rawData = urllib.urlopen('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + encoded).read()
 	jsonData = json.loads(rawData)
 
-
-
-
 	searchResults = jsonData['responseData']['results']
 	for result in searchResults:
-		title= result['title']
+		title= stripper(result['title'])
 		link = result['url']
-		print stripper(title)
-		print link
+		content = stripper(unicode(result['content']))
+		print "URL: "+link
+		print "Short Description: "+content
 		print '\n'
 
-
-def askSearch(query):
+def bingSearch(query):
 	encoded = urllib.quote(query)
-	rawData = urllib.urlopen('http://www.ask.com/web?q=' + encoded).read()
+	url = 'http://www.bing.com/search?format=rss&q='+encoded
+	rawData = urllib.urlopen(url).read()
+	res_links = []
+	res_desc = []
 	soup = BeautifulSoup(rawData)
-	all_links= soup.find_all('p', class_="web-result-url")
-	all_links_desc = soup.find_all('p', class_="web-result-description") 
+	all_links = soup.find_all('link')
+	all_contents = soup.find_all('description')
 
-	for i in range(3):
-		print unicode(all_links[i].contents[0])
-		print unicode(all_links_desc[i])
+	for a in all_links:
+		if a.parent.name == 'item':
+			res_links.append(a.string)
+	for b in all_contents:
+		if b.parent.name == 'item':
+			res_desc.append(b.string)
+
+	for i in range(4):
+		print "URL: "+res_links[i]
+		print "Short Description: "+res_desc[i]
 		print '\n'
 
 googleCount = 0
-askCount = 0
+bingCount = 0
+
+
+
 
 
 def choiceCheck(choice):
 	global googleCount
-	global askCount
+	global bingCount
 	if int(choice) == 1:
-		googleCount = googleCount + 1
+		googleCount = googleCount+1
 
 	elif int(choice) == 2:
-		askCount = askCount + 1
+		bingCount = bingCount+1
 
 	else:
 		choiceCheck(raw_input("Please select the better result 1 or 2: "))
 
 
 
-
-
-
 for i in range(3):
+	print "==============================================================================================================================="
+	print "In this program we apply double-blind testing method to evaluate the performance "
+	print "of any two search engines (here, Google.com vs Ask.com)"
+	print "You shall input any search query and our program will return the 3 top most results from"
+	print "each of the engines. The search is blind, meaning that you won't know which engine produced the results."
+	print "We ask you to pick which result is better every iteration. Based on your picks, we will decide which search engine is better."
+	print "==============================================================================================================================="
+	print "\n"
 	print "Search Round ", i+1, '\n'
-	query=raw_input("Enter a search: ")
-	print "Start Searching using engine-1 ----------------------------------------------------------------------------------------"
+	query=raw_input("Enter a search query: ")
+	print '\n'+"Start Randomized Search (1)"
+	print "------------------------------------"
 	googleSearch(query)
-	print "Now searching using engine-2 ----------------------------------------------------------------------------------------------"
-	askSearch(query)
+	print "Start Randomized Search (2)"
+	print "------------------------------------"
+	bingSearch(query)
 	print '\n\n'
 	choiceCheck(raw_input("Please select the better result  1 or 2: "))
 
-print "Result: ", googleCount, " vs " , askCount
+print "Result: ", googleCount, " vs " , bingCount
+if googleCount > bingCount:
+	print "Google wins!"
+else:
+	print "Bing wins!"
 
